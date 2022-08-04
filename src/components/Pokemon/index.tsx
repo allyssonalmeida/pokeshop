@@ -1,6 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import { create } from 'domain';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { getPokemonData } from '../../api';
-import * as styled from './style'
+import { CartContext, CartType } from '../context/Cart';
+import * as S from './style'
 
 type PokeTypes = {
   slot: number,
@@ -10,13 +12,14 @@ type PokeTypes = {
 }
 
 type PokemonType = {
+  id: number
   name: string
   sprites: {
     front_default: string
     front_shiny: string
   }
   types: PokeTypes[]
-  price?: number
+  price: number
 }
 
 type Props = {
@@ -28,6 +31,7 @@ type Props = {
 
 const Pokemon: React.FC<Props> = ({pokemon}) => {
   const [creature, setCreature] = useState<PokemonType>()
+  const {addToCart, cartItems} = useContext(CartContext) as CartType;
 
   const getPokemonInfo = async () => {
     const response = await getPokemonData(pokemon.name)
@@ -40,33 +44,47 @@ const Pokemon: React.FC<Props> = ({pokemon}) => {
     getPokemonInfo();
   }, [])
 
-
   useEffect(() => {
     console.log(creature?.name, creature?.types)
   }, [creature])
 
+  const formatNumber = (value: number) =>{
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value/100)
+  }
+
+  function handleCart(){
+    alert("CLICOU NO BUTAUM")
+    if(creature){
+      addToCart({
+        ...creature, 
+        price: creature.price,
+        quantity: 1
+      })
+    }
+  }
+
   return (
     <Fragment>
       {creature && 
-        <styled.Card>
+        <S.Card>
           <img src={creature.sprites.front_default} alt={creature.name} />
-          <styled.PokemonInfo>
-            <styled.PokeName>
+          <S.PokemonInfo>
+            <S.PokeName>
               {creature.name}
-            </styled.PokeName>
-            <styled.TypeWrapper>
+            </S.PokeName>
+            <S.TypeWrapper>
               {creature.types.map(item => (
-                <styled.PokeType>{item.type.name}</styled.PokeType>
+                <S.PokeType>{item.type.name}</S.PokeType>
               ))}
-            </styled.TypeWrapper>
-            <styled.PokePrice>
+            </S.TypeWrapper>
+            <S.PokePrice>
               {creature.price}
-            </styled.PokePrice>
-          </styled.PokemonInfo>
-          <styled.BuyWrapper>
-            <button>Add To Cart</button>
-          </styled.BuyWrapper>
-        </styled.Card>
+            </S.PokePrice>
+          </S.PokemonInfo>
+          <S.BuyWrapper>
+            <button onClick={handleCart}>Add To Cart</button>
+          </S.BuyWrapper>
+        </S.Card>
       }
     </Fragment>
   );
