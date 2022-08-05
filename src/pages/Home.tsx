@@ -47,6 +47,7 @@ const Home: React.FC = () => {
   const [nextPage, setNextPage] = useState<string | null>(null)
   const [previousPage, setPreviousPage] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const getPokemon = async () => {
     const {results, next, previous} = await getAllPokemon()
@@ -77,13 +78,19 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     getPokemon();  
+    if(window.innerWidth < 520){
+      setIsMobile(true)
+    }
   }, [])
+
+  useEffect(() => {
+    console.log(pokemonList)  
+  }, [pokemonList])
 
 
   const toggleModal = async(creature?: string) => {
     if(creature){
       const response = await getPokemonData(creature)
-      console.log(response);
       const flavor_text_entries = await getPokedexEntry(creature)
       setPokedex({...response, description: flavor_text_entries})
     }
@@ -92,11 +99,24 @@ const Home: React.FC = () => {
   
   return (
     <Fragment>
+      {
+      isMobile &&
+            <S.Pagination>
+            {previousPage && 
+              <S.Button onClick={getPreviousPage} left="0px">
+                ⮜⮜ Previous Page
+              </S.Button>}
+            {nextPage && 
+              <S.Button onClick={getNextPage} right="0px">
+                Next Page ⮞⮞
+              </S.Button>}
+          </S.Pagination>
+      }
       <S.List>
         {
           pokemonList.map((poke) => (
             <li key={poke.name}>
-              <Pokemon pokemon={poke} onClick={() => toggleModal(poke.name)} />
+              <Pokemon pokemon={poke} onClick={() => {toggleModal(poke.name)}} />
             </li>
           ))
         }

@@ -22,6 +22,7 @@ export const Card = styled.div`
     border-radius: 10px; 
     cursor: pointer;
   }
+
 `
 
 export const PokemonInfo = styled.div`
@@ -99,4 +100,11 @@ export const BuyButton = styled.button`
     }
   }
 
+`
+
+export const Skeleton = styled.div`
+  height: 302px;
+  width: 220px;
+  border-radius: 10px;
+  background: #fff;
 `

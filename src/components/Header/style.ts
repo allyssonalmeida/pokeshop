@@ -5,27 +5,35 @@ export const Header = styled.header`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--main-color);
   background: #fff;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 999;
+  padding: 0;
+  margin: 0;
 `
 
 export const Top = styled.div`
   width: 100%;
   border-bottom: 5px solid #000;
+
+  img{
+    object-fit: contain;
+    height: 100%;
+  }
 `
 
 export const Content = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   height: 60px;
   max-width: 60em;
   width: 100%;
   margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
 `
 
 export const Bottom = styled.div`
@@ -33,6 +41,7 @@ export const Bottom = styled.div`
   height: 80px;
   background: #E71A23;
   position: relative;
+  padding: 0;
 
   &::before{
     content: '';
@@ -44,7 +53,7 @@ export const Bottom = styled.div`
     background: #fff;
     position: absolute;
     top: -20px;
-    right: calc(50% + 15px);
+    right: calc(50% - 15px);
   }
 `
 
@@ -60,4 +69,11 @@ export const Search = styled.div`
     box-sizing: border-box;
     padding-left: 20px;
   }
+`
+
+export const Minicart = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 `

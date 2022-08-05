@@ -12,7 +12,8 @@ export const List = styled.ul`
 
 export const Pagination = styled.div`
   position: relative;
-  margin-top: 20px
+  margin: 20px 10px;
+  height: 40px;
 `
 export const Button = styled.button.attrs((props: {right: string, left: string}) =>({
     right: props.right || "initial",

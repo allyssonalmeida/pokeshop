@@ -1,9 +1,9 @@
 import React from "react";
 
-// import { Container } from './styles';
+import LogoImg from '../assets/images/logo.png'
 
 const Logo: React.FC = () => (
-	<h1>Logo</h1>
+	<img src={LogoImg} alt="Logo" className="logo" />
 );
 
 export default Logo;

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Header from './components/Header';
 import './App.scss'
 import Home from './pages/Home';
-import { CartStorage } from './components/context/Cart';
+import { CartStorage } from './context/Cart';
 
 function App() {
   return (

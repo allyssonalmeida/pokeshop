@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { getPokemonData } from '../../api';
-import { CartContext, CartType } from '../context/Cart';
+import { CartContext, CartType } from '../../context/Cart';
 import * as S from './style'
 
 type PokeTypes = {
@@ -41,15 +41,17 @@ const Pokemon: React.FC<Props> = ({pokemon, onClick}) => {
   }
 
   useEffect( () => {
+    console.log("GET POKEMON INFO")
     getPokemonInfo();
   }, [])
 
   useEffect(() => {
     console.log(creature?.name, creature?.types)
-  }, [creature])
+  }, [])
 
   const toggleModal = () => {
     onClick()
+    console.log(creature);
   }
 
   const formatNumber = (value: number) =>{
@@ -68,8 +70,8 @@ const Pokemon: React.FC<Props> = ({pokemon, onClick}) => {
 
   return (
     <Fragment>
-      {creature && 
-        <S.Card>
+      {creature ? 
+        (<S.Card>
           <img
             src={creature.sprites.front_default}
             alt={creature.name}
@@ -80,8 +82,8 @@ const Pokemon: React.FC<Props> = ({pokemon, onClick}) => {
               {creature.name}
             </S.PokeName>
             <S.TypeWrapper>
-              {creature.types.map(item => (
-                <S.PokeType className={item.type.name}>{item.type.name}</S.PokeType>
+              {creature.types.map(({type}) => (
+                <S.PokeType className={type.name} key={type.name}>{type.name}</S.PokeType>
               ))}
             </S.TypeWrapper>
             <S.PokePrice>
@@ -91,7 +93,12 @@ const Pokemon: React.FC<Props> = ({pokemon, onClick}) => {
           <S.BuyWrapper>
             <S.BuyButton onClick={handleCart}>I Choose you!</S.BuyButton>
           </S.BuyWrapper>
-        </S.Card>
+        </S.Card>)
+        :(
+          <S.Skeleton>
+            
+          </S.Skeleton>
+        )
       }
     </Fragment>
   );
