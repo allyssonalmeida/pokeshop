@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Logo from '../../icons/Logo';
 import { CartContext, CartType } from '../context/Cart';
-import * as styled from './style'
+import * as S from './style'
 
 const Header: React.FC = () => {
   const {cartItems} = useContext(CartContext)  as CartType
@@ -9,15 +9,20 @@ const Header: React.FC = () => {
   
 
   return (
-    <styled.Header>
-      <Logo />
-      <styled.Search>
-        <input type="text" placeholder="Type your search here..." />
-      </styled.Search>
-      <div>
-        Carrinho: {cartItems.length}
-      </div>
-    </styled.Header>
+    <S.Header>
+      <S.Top>
+        <S.Content>
+          <Logo />
+          <S.Search>
+            <input type="text" placeholder="Type your search here..." />
+          </S.Search>
+          <div>
+            Carrinho: {cartItems.length}
+          </div>
+        </S.Content>
+      </S.Top>
+      <S.Bottom />
+    </S.Header>
   );
 }
 

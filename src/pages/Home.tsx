@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { getAllPokemon } from '../api';
 import Pokemon from '../components/Pokemon';
+import Modal from "react-modal";
 
-import * as styled from './style';
+import * as S from './style';
 
 type PokemonType = {
   name: string
@@ -10,10 +11,10 @@ type PokemonType = {
 }
 
 const Home: React.FC = () => {
-  const [offset, setOffset] = useState(0)
   const [pokemonList, setPokemonList] = useState<PokemonType[]>([]);
   const [nextPage, setNextPage] = useState<string | null>(null)
   const [previousPage, setPreviousPage] = useState<string | null>(null)
+  const [isOpen, setIsOpen] = useState(false);
 
   const getPokemon = async () => {
     const {results, next, previous} = await getAllPokemon()
@@ -45,22 +46,44 @@ const Home: React.FC = () => {
   useEffect(() => {
     getPokemon();  
   }, [])
+
+
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
   
   return (
     <Fragment>
-      <styled.List>
+      <S.List>
         {
           pokemonList.map((poke) => (
             <li key={poke.name}>
-              <Pokemon pokemon={poke} />
+              <Pokemon pokemon={poke} onClick={toggleModal} />
             </li>
           ))
         }
-      </styled.List>
-      <styled.Pagination>
-        {previousPage && <button onClick={getPreviousPage}>Previous Page</button>}
-        {nextPage && <button onClick={getNextPage}>Next Page</button>}
-      </styled.Pagination>
+      </S.List>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={toggleModal}
+        contentLabel="My dialog"
+        className="mymodal"
+        overlayClassName="myoverlay"
+        closeTimeoutMS={500}
+      >
+        <div>My modal dialog.</div>
+        <button onClick={toggleModal}>Close modal</button>
+      </Modal>
+      <S.Pagination>
+        {previousPage && 
+          <S.Button onClick={getPreviousPage} left="0px">
+            ⮜⮜ Previous Page
+          </S.Button>}
+        {nextPage && 
+          <S.Button onClick={getNextPage} right="0px">
+            Next Page ⮞⮞
+          </S.Button>}
+      </S.Pagination>
     </Fragment>
   );
 }

@@ -1,6 +1,6 @@
-import { create } from 'domain';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { getPokemonData } from '../../api';
+import usePrice from '../../hooks/usePrice';
 import { CartContext, CartType } from '../context/Cart';
 import * as S from './style'
 
@@ -31,12 +31,12 @@ type Props = {
 
 const Pokemon: React.FC<Props> = ({pokemon}) => {
   const [creature, setCreature] = useState<PokemonType>()
-  const {addToCart, cartItems} = useContext(CartContext) as CartType;
+  const {addToCart} = useContext(CartContext) as CartType;
 
   const getPokemonInfo = async () => {
     const response = await getPokemonData(pokemon.name)
     const pokeData = response;
-    pokeData.price = (response.weight * 7.5)
+    pokeData.price = (response.weight * 2 * 115.5)
     setCreature(pokeData)
   }
 
@@ -49,11 +49,10 @@ const Pokemon: React.FC<Props> = ({pokemon}) => {
   }, [creature])
 
   const formatNumber = (value: number) =>{
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value/100)
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value/100)
   }
 
   function handleCart(){
-    alert("CLICOU NO BUTAUM")
     if(creature){
       addToCart({
         ...creature, 
@@ -74,15 +73,15 @@ const Pokemon: React.FC<Props> = ({pokemon}) => {
             </S.PokeName>
             <S.TypeWrapper>
               {creature.types.map(item => (
-                <S.PokeType>{item.type.name}</S.PokeType>
+                <S.PokeType className={item.type.name}>{item.type.name}</S.PokeType>
               ))}
             </S.TypeWrapper>
             <S.PokePrice>
-              {creature.price}
+              {formatNumber(creature.price)}
             </S.PokePrice>
           </S.PokemonInfo>
           <S.BuyWrapper>
-            <button onClick={handleCart}>Add To Cart</button>
+            <S.BuyButton onClick={handleCart}>I Choose you!</S.BuyButton>
           </S.BuyWrapper>
         </S.Card>
       }
