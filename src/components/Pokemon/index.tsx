@@ -1,6 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { getPokemonData } from '../../api';
-import usePrice from '../../hooks/usePrice';
 import { CartContext, CartType } from '../context/Cart';
 import * as S from './style'
 
@@ -27,9 +26,10 @@ type Props = {
     name: string
     url: string 
   }
+  onClick: () => void
 }
 
-const Pokemon: React.FC<Props> = ({pokemon}) => {
+const Pokemon: React.FC<Props> = ({pokemon, onClick}) => {
   const [creature, setCreature] = useState<PokemonType>()
   const {addToCart} = useContext(CartContext) as CartType;
 
@@ -47,6 +47,10 @@ const Pokemon: React.FC<Props> = ({pokemon}) => {
   useEffect(() => {
     console.log(creature?.name, creature?.types)
   }, [creature])
+
+  const toggleModal = () => {
+    onClick()
+  }
 
   const formatNumber = (value: number) =>{
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value/100)
@@ -66,7 +70,11 @@ const Pokemon: React.FC<Props> = ({pokemon}) => {
     <Fragment>
       {creature && 
         <S.Card>
-          <img src={creature.sprites.front_default} alt={creature.name} />
+          <img
+            src={creature.sprites.front_default}
+            alt={creature.name}
+            onClick={toggleModal}
+          />
           <S.PokemonInfo>
             <S.PokeName>
               {creature.name}

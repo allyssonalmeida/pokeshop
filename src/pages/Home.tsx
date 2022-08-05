@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { getAllPokemon } from '../api';
+import { getAllPokemon, getPokedexEntry, getPokemonData } from '../api';
 import Pokemon from '../components/Pokemon';
 import Modal from "react-modal";
 
@@ -9,9 +9,41 @@ type PokemonType = {
   name: string
   url: string
 }
+type PokeTypes = {
+  slot: number,
+  type: {
+    name: string
+  }
+}
+
+type DescriptionType = {
+  flavor_text: string
+}
+
+type StatsType = {
+  base_stat: number
+  stat: {     
+    name: string
+  }
+}
+
+type PokedexType = {
+  id: number
+  name: string
+  sprites: {
+    front_default: string
+    front_shiny: string
+  }
+  types: PokeTypes[]
+  description: DescriptionType[]
+  stats: StatsType[]
+}
+
+
 
 const Home: React.FC = () => {
   const [pokemonList, setPokemonList] = useState<PokemonType[]>([]);
+  const [pokedex, setPokedex] = useState<PokedexType>()
   const [nextPage, setNextPage] = useState<string | null>(null)
   const [previousPage, setPreviousPage] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +80,13 @@ const Home: React.FC = () => {
   }, [])
 
 
-  function toggleModal() {
+  const toggleModal = async(creature?: string) => {
+    if(creature){
+      const response = await getPokemonData(creature)
+      console.log(response);
+      const flavor_text_entries = await getPokedexEntry(creature)
+      setPokedex({...response, description: flavor_text_entries})
+    }
     setIsOpen(!isOpen);
   }
   
@@ -58,21 +96,39 @@ const Home: React.FC = () => {
         {
           pokemonList.map((poke) => (
             <li key={poke.name}>
-              <Pokemon pokemon={poke} onClick={toggleModal} />
+              <Pokemon pokemon={poke} onClick={() => toggleModal(poke.name)} />
             </li>
           ))
         }
       </S.List>
       <Modal
         isOpen={isOpen}
-        onRequestClose={toggleModal}
-        contentLabel="My dialog"
-        className="mymodal"
-        overlayClassName="myoverlay"
-        closeTimeoutMS={500}
+        className="modal"
+        closeTimeoutMS={0}
       >
-        <div>My modal dialog.</div>
-        <button onClick={toggleModal}>Close modal</button>
+        <div className="modal-content">
+          <div className="modal-image">
+            <img src={pokedex?.sprites.front_default} alt={pokedex?.name} />
+          </div>
+          <div className="modal-description">
+            <div className="modal-title">
+              <span>{pokedex?.name}</span>
+              <strong>{pokedex?.name}</strong>
+            </div>
+            <div className="modal-entry">
+              <p>{pokedex?.description[1].flavor_text}</p>
+            </div>
+            <div className="modal-stats">
+              {pokedex?.stats.map((item) => (
+                <div>
+                  <strong>{item.stat.name}</strong>
+                  <input type="range" className="status-bar"  value={item.base_stat} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <button onClick={()=>{toggleModal()}}>&times;</button>
+        </div>
       </Modal>
       <S.Pagination>
         {previousPage && 

@@ -20,6 +20,7 @@ export const Card = styled.div`
     height: 150px;
     background: #fff;
     border-radius: 10px; 
+    cursor: pointer;
   }
 `
 
